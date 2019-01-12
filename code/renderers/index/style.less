@@ -1,0 +1,28 @@
+body {
+  margin: 0;
+}
+
+#root-container {
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+
+  #url-input-bar {
+    display: flex;
+    flex-direction: row;
+
+    .header {
+      display: flex;
+      align-items: center;
+    }
+
+    #url-input {
+      flex: 1;
+    }
+  }
+}
+
+#webview {
+  flex: 1;
+  padding-top: 5px;
+}
