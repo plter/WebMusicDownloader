@@ -14,7 +14,7 @@ class RendererMain {
         this.resizeRootContainerByWindowInnerSize();
         this.addListeners();
 
-        this._webview.src = "http://yunp.top";
+        this._webview.src = "http://music.163.com";
     }
 
     initUI() {
@@ -42,6 +42,9 @@ class RendererMain {
     _webview_didNavigateHandler(e) {
         this._urlInput.value = e.url;
         let webContents = this._webview.getWebContents();
+        webContents.on('new-window', function (event, url, frameName, disposition, options, additionalFeatures) {
+            console.log(event.sender);
+        });
     }
 
     _urlInputBarForm_submitHandler(e) {
