@@ -2,9 +2,9 @@ body {
   margin: 0;
 }
 #root-container {
+  padding: 5px;
   display: flex;
   flex-direction: column;
-  padding: 5px;
 }
 #root-container #url-input-bar {
   display: flex;
@@ -17,8 +17,19 @@ body {
 #root-container #url-input-bar #url-input {
   flex: 1;
 }
-#webview {
+#root-container #webview {
   flex: 1;
   padding-top: 5px;
+}
+#root-container .network-monitor {
+  height: 150px;
+  padding-left: 5px;
+  display: flex;
+  flex-direction: column;
+}
+#root-container .network-monitor .network-monitor-output {
+  width: 100%;
+  flex: 1;
+  font-size: 9pt;
 }
 /*# sourceMappingURL=style.css.map */

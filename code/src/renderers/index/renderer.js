@@ -1,20 +1,18 @@
-// This file is required by the index.html file and will
-// be executed in the renderer process for that window.
-// All of the Node.js APIs are available in this process.
-
 const electron = require("electron");
+const http = require('http');
+const setup = require('proxy');
+const Constants = require("../../commons/Constants");
+const ProxyAdapter = require("./ProxyAdapter");
 
 
 class RendererMain {
 
-
     constructor() {
         this.initUI();
+        this.startNetworkMonitor();
 
         this.resizeRootContainerByWindowInnerSize();
         this.addListeners();
-
-        this._webview.src = "http://music.163.com";
     }
 
     initUI() {
@@ -24,6 +22,7 @@ class RendererMain {
         this._urlInput = this._urlInputBarForm["url"];
         this._btnBack = document.querySelector("#url-input-bar .btn-back");
         this._btnForward = document.querySelector("#url-input-bar .btn-forward");
+        this._monitorOutput = document.querySelector(".network-monitor .network-monitor-output");
     }
 
     addListeners() {
@@ -33,6 +32,39 @@ class RendererMain {
         this._webview.addEventListener("did-navigate", this._webview_didNavigateHandler.bind(this));
         this._btnBack.onclick = e => this._webview.goBack();
         this._btnForward.onclick = e => this._webview.goForward();
+    }
+
+    startNetworkMonitor() {
+        let pa = new ProxyAdapter();
+        pa.start(() => {
+            this.monitorConsoleLog(`成功在端口 ${Constants.MONITOR_PROXY_ADAPTER_PORT} 建立代理服务器入口`);
+
+            this._webview.src = "https://yunp.top/init/course/index";
+        }, e => {
+            if (e.code === 'EADDRINUSE') {
+                this.monitorConsoleLog(`[错误]端口 ${Constants.MONITOR_PROXY_ADAPTER_PORT} 被占用`);
+            }
+            this.monitorConsoleLog("建立代理服务器入口失败");
+        }, () => {
+            this.monitorConsoleLog(`成功在端口 ${Constants.MONITOR_PROXY_HTTP_SERVER_PORT} 建立 HTTP 代理服务器`);
+        }, e => {
+            if (e.code === 'EADDRINUSE') {
+                this.monitorConsoleLog(`[错误]端口 ${Constants.MONITOR_PROXY_HTTP_SERVER_PORT} 被占用`);
+            }
+            this.monitorConsoleLog("建立 HTTP 代理服务器失败");
+        }, () => {
+            this.monitorConsoleLog(`成功在端口 ${Constants.MONITOR_PROXY_HTTPS_SERVER_PORT} 建立 HTTPS 代理服务器`);
+        }, e => {
+            if (e.code === 'EADDRINUSE') {
+                this.monitorConsoleLog(`[错误]端口 ${Constants.MONITOR_PROXY_HTTPS_SERVER_PORT} 被占用`);
+            }
+            this.monitorConsoleLog("建立 HTTPS 代理服务器失败");
+        });
+    }
+
+    monitorConsoleLog(msg) {
+        this._monitorOutput.value += msg + "\n";
+        this._monitorOutput.scrollTop = this._monitorOutput.scrollHeight;
     }
 
     resizeRootContainerByWindowInnerSize() {

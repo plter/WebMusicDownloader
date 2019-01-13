@@ -1,8 +1,11 @@
-// Modules to control application life and create native browser window
-const {app, BrowserWindow} = require('electron');
+const Constants = require("./src/commons/Constants");
 
-// Keep a global reference of the window object, if you don't, the window will
-// be closed automatically when the JavaScript object is garbage collected.
+// Modules to control application life and create native browser window
+const {app, BrowserWindow, netLog} = require('electron');
+app.commandLine.appendSwitch("proxy-server", `${Constants.MONITOR_PROXY_SERVER_IP}:${Constants.MONITOR_PROXY_ADAPTER_PORT}`);
+app.commandLine.appendSwitch("ignore-certificate-errors");
+
+
 let mainWindow;
 
 function createWindow() {
@@ -10,7 +13,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({width: 1200, height: 720});
 
     // and load the index.html of the app.
-    mainWindow.loadFile('renderers/index/index.html');
+    mainWindow.loadFile('src/renderers/index/index.html');
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()
@@ -24,7 +27,9 @@ function createWindow() {
 // This method will be called when Electron has finished
 // initialization and is ready to create browser windows.
 // Some APIs can only be used after this event occurs.
-app.on('ready', createWindow);
+app.on('ready', e => {
+    createWindow();
+});
 
 // Quit when all windows are closed.
 app.on('window-all-closed', function () {

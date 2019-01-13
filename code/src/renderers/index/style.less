@@ -1,0 +1,41 @@
+body {
+  margin: 0;
+}
+
+#root-container {
+  padding: 5px;
+  display: flex;
+  flex-direction: column;
+
+  #url-input-bar {
+    display: flex;
+    flex-direction: row;
+
+    .header {
+      display: flex;
+      align-items: center;
+    }
+
+    #url-input {
+      flex: 1;
+    }
+  }
+
+  #webview {
+    flex: 1;
+    padding-top: 5px;
+  }
+
+  .network-monitor {
+    height: 150px;
+    padding-left: 5px;
+    display: flex;
+    flex-direction: column;
+
+    .network-monitor-output {
+      width: 100%;
+      flex: 1;
+      font-size: 9pt;
+    }
+  }
+}
