@@ -15,15 +15,27 @@
 <body>
 <div id="root-container">
     <form id="url-input-bar">
-        <a href="#" class="btn btn-dark btn-back">后退</a>
-        <a href="#" class="btn btn-dark btn-forward">前进</a>
-        <div class="header">网址：</div>
+        <div class="btn-group" role="group">
+            <a href="#" class="btn btn-dark btn-back">后退</a>
+            <a href="#" class="btn btn-dark btn-forward">前进</a>
+        </div>
+        <div style="width: 5px"></div>
+        <div class="header">网址</div>
         <input name="url" id="url-input">
+        <div style="width: 5px"></div>
         <input type="submit" value="Go" class="btn btn-dark">
     </form>
     <webview id="webview" allowpopups></webview>
-    <a class="btn btn-dark btn-sm" href="#" id="btn-toggle-monitor-console">^</a>
     <div class="network-monitor">
+        <div class="network-monitor-header">
+            <div style="font-weight: bold;">网络监视器</div>
+            <div style="flex: 1;"></div>
+            <div>下载目录</div>
+            <input type="text" readonly id="save-dir">
+            <a href="#" class="btn btn-dark btn-sm" id="btn-browse-for-save-dir">...</a>
+            <div style="width: 5px;"></div>
+            <a class="btn btn-dark btn-sm" href="#" id="btn-toggle-monitor-console">^</a>
+        </div>
         <textarea readonly class="network-monitor-output"></textarea>
     </div>
 </div>

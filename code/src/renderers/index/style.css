@@ -23,9 +23,18 @@ body {
 }
 #root-container .network-monitor {
   height: 100px;
-  padding-left: 5px;
   display: flex;
   flex-direction: column;
+}
+#root-container .network-monitor .network-monitor-header {
+  display: flex;
+  flex-direction: row;
+  background-color: silver;
+  border-radius: 5px 5px 0 0;
+  padding: 3px;
+}
+#root-container .network-monitor .network-monitor-header #save-dir {
+  width: 380px;
 }
 #root-container .network-monitor .network-monitor-output {
   width: 100%;

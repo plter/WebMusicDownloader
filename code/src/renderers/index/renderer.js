@@ -3,6 +3,9 @@ const http = require('http');
 const Constants = require("../../commons/Constants");
 const ProxyAdapter = require("./ProxyAdapter");
 const url = require("url");
+const os = require("os");
+const path = require("path");
+const fs = require("fs");
 
 class RendererMain {
 
@@ -29,6 +32,14 @@ class RendererMain {
         this._networkMonitorContainer = document.querySelector(".network-monitor");
         this._monitorOutput = document.querySelector(".network-monitor .network-monitor-output");
         this._btnToggleMonitorConsole = document.querySelector("#btn-toggle-monitor-console");
+
+        this._inputSaveDir = document.querySelector("#save-dir");
+        this._btnBrowserForSaveDir = document.querySelector("#btn-browse-for-save-dir");
+        this._webMusicDownloadDir = path.join(os.homedir(), "WebMusicDownload");
+        if (!fs.existsSync(this._webMusicDownloadDir)) {
+            fs.mkdirSync(this._webMusicDownloadDir);
+        }
+        this._inputSaveDir.value = this._webMusicDownloadDir;
     }
 
     addListeners() {

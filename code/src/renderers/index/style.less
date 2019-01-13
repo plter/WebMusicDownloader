@@ -28,9 +28,20 @@ body {
 
   .network-monitor {
     height: 100px;
-    padding-left: 5px;
     display: flex;
     flex-direction: column;
+
+    .network-monitor-header {
+      display: flex;
+      flex-direction: row;
+      background-color: silver;
+      border-radius: 5px 5px 0 0;
+      padding: 3px;
+
+      #save-dir {
+        width: 380px;
+      }
+    }
 
     .network-monitor-output {
       width: 100%;
