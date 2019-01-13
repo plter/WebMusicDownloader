@@ -22,7 +22,7 @@ body {
   padding-top: 5px;
 }
 #root-container .network-monitor {
-  height: 150px;
+  height: 100px;
   padding-left: 5px;
   display: flex;
   flex-direction: column;

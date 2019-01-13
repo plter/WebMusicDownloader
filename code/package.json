@@ -22,7 +22,6 @@
   "dependencies": {
     "bootstrap": "^4.2.1",
     "jquery": "^3.3.1",
-    "popper.js": "^1.14.6",
-    "proxy": "^0.2.4"
+    "popper.js": "^1.14.6"
   }
 }

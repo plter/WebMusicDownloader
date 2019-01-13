@@ -1,9 +1,7 @@
 const electron = require("electron");
 const http = require('http');
-const setup = require('proxy');
 const Constants = require("../../commons/Constants");
 const ProxyAdapter = require("./ProxyAdapter");
-
 
 class RendererMain {
 
@@ -39,27 +37,24 @@ class RendererMain {
         pa.start(() => {
             this.monitorConsoleLog(`成功在端口 ${Constants.MONITOR_PROXY_ADAPTER_PORT} 建立代理服务器入口`);
 
-            this._webview.src = "https://yunp.top/init/course/index";
+            this._webview.src = "http://y.qq.com";
+
         }, e => {
             if (e.code === 'EADDRINUSE') {
                 this.monitorConsoleLog(`[错误]端口 ${Constants.MONITOR_PROXY_ADAPTER_PORT} 被占用`);
             }
             this.monitorConsoleLog("建立代理服务器入口失败");
         }, () => {
-            this.monitorConsoleLog(`成功在端口 ${Constants.MONITOR_PROXY_HTTP_SERVER_PORT} 建立 HTTP 代理服务器`);
-        }, e => {
-            if (e.code === 'EADDRINUSE') {
-                this.monitorConsoleLog(`[错误]端口 ${Constants.MONITOR_PROXY_HTTP_SERVER_PORT} 被占用`);
-            }
-            this.monitorConsoleLog("建立 HTTP 代理服务器失败");
-        }, () => {
             this.monitorConsoleLog(`成功在端口 ${Constants.MONITOR_PROXY_HTTPS_SERVER_PORT} 建立 HTTPS 代理服务器`);
         }, e => {
             if (e.code === 'EADDRINUSE') {
-                this.monitorConsoleLog(`[错误]端口 ${Constants.MONITOR_PROXY_HTTPS_SERVER_PORT} 被占用`);
+                this.monitorConsoleLog(`[错误]端口 ${Constants.MONITOR_PROXY_ADAPTER_PORT} 被占用`);
             }
             this.monitorConsoleLog("建立 HTTPS 代理服务器失败");
         });
+        pa.onConnectURL = (url, relatedRequest) => {
+            this.monitorConsoleLog(`[得到]${url}`);
+        };
     }
 
     monitorConsoleLog(msg) {
