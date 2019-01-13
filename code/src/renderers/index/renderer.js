@@ -2,15 +2,21 @@ const electron = require("electron");
 const http = require('http');
 const Constants = require("../../commons/Constants");
 const ProxyAdapter = require("./ProxyAdapter");
+const url = require("url");
 
 class RendererMain {
 
     constructor() {
+        this.initProperties();
         this.initUI();
         this.startNetworkMonitor();
 
         this.resizeRootContainerByWindowInnerSize();
         this.addListeners();
+    }
+
+    initProperties() {
+        this._monitorConsoleExpanded = false;
     }
 
     initUI() {
@@ -20,7 +26,9 @@ class RendererMain {
         this._urlInput = this._urlInputBarForm["url"];
         this._btnBack = document.querySelector("#url-input-bar .btn-back");
         this._btnForward = document.querySelector("#url-input-bar .btn-forward");
+        this._networkMonitorContainer = document.querySelector(".network-monitor");
         this._monitorOutput = document.querySelector(".network-monitor .network-monitor-output");
+        this._btnToggleMonitorConsole = document.querySelector("#btn-toggle-monitor-console");
     }
 
     addListeners() {
@@ -30,6 +38,7 @@ class RendererMain {
         this._webview.addEventListener("did-navigate", this._webview_didNavigateHandler.bind(this));
         this._btnBack.onclick = e => this._webview.goBack();
         this._btnForward.onclick = e => this._webview.goForward();
+        this._btnToggleMonitorConsole.onclick = this._btnToggleMonitorConsole_clickHandler.bind(this);
     }
 
     startNetworkMonitor() {
@@ -37,7 +46,7 @@ class RendererMain {
         pa.start(() => {
             this.monitorConsoleLog(`成功在端口 ${Constants.MONITOR_PROXY_ADAPTER_PORT} 建立代理服务器入口`);
 
-            this._webview.src = "http://y.qq.com";
+            this._webview.src = "http://music.163.com";
 
         }, e => {
             if (e.code === 'EADDRINUSE') {
@@ -52,8 +61,21 @@ class RendererMain {
             }
             this.monitorConsoleLog("建立 HTTPS 代理服务器失败");
         });
-        pa.onConnectURL = (url, relatedRequest) => {
-            this.monitorConsoleLog(`[得到]${url}`);
+        pa.onGotContent = (urlString, relatedRequest, relatedResponse) => {
+            let contentType = relatedResponse.headers['content-type'] || "";
+            let contentLength = parseInt(relatedResponse.headers['content-length'] || "0");
+
+            let parsedUrl = url.parse(urlString);
+            let pathname = parsedUrl.pathname ? parsedUrl.pathname.toLowerCase() : "";
+            if (pathname.endsWith(".mp3") || pathname.endsWith("m4a") || contentType.startsWith("audio")) {
+                if (contentLength > 1000000) {
+                    this.monitorConsoleLog(`[找到]${urlString}`);
+                } else if (contentLength > 0) {
+                    this.monitorConsoleLog(`[提示]音乐文件小于 1M，已忽略。${urlString}`);
+                } else {
+                    this.monitorConsoleLog(`[提示]无效音乐文件，已忽略。${urlString}`);
+                }
+            }
         };
     }
 
@@ -66,11 +88,19 @@ class RendererMain {
         this._rootContainer.style.height = `${window.innerHeight}px`;
     }
 
+
+    loadFromUrl(url) {
+        this._webview.src = url;
+        this._urlInput.value = url;
+    }
+
     _webview_didNavigateHandler(e) {
         this._urlInput.value = e.url;
         let webContents = this._webview.getWebContents();
-        webContents.on('new-window', function (event, url, frameName, disposition, options, additionalFeatures) {
-            console.log(event.sender);
+        webContents.on('new-window', (event, url, frameName, disposition, options, additionalFeatures) => {
+            if (disposition == "foreground-tab") {
+                this.loadFromUrl(url);
+            }
         });
     }
 
@@ -82,8 +112,19 @@ class RendererMain {
             if (!url.startsWith("http://") && !url.startsWith("https://")) {
                 url = `http://${url}`;
             }
-            this._webview.src = url;
-            this._urlInput.value = url;
+            this.loadFromUrl(url);
+        }
+    }
+
+    _btnToggleMonitorConsole_clickHandler(e) {
+        if (!this._monitorConsoleExpanded) {
+            this._networkMonitorContainer.style.height = "600px";
+            this._btnToggleMonitorConsole.innerHTML = "v";
+            this._monitorConsoleExpanded = true;
+        } else {
+            this._networkMonitorContainer.style.height = "100px";
+            this._btnToggleMonitorConsole.innerHTML = "^";
+            this._monitorConsoleExpanded = false;
         }
     }
 }
