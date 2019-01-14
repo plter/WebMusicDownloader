@@ -78,7 +78,7 @@ class RendererMain {
 
             let parsedUrl = url.parse(urlString);
             let pathname = parsedUrl.pathname ? parsedUrl.pathname.toLowerCase() : "";
-            if (pathname.endsWith(".mp3") || pathname.endsWith("m4a") || pathname.endsWith("mp4") || contentType.startsWith("audio")) {
+            if (pathname.endsWith(".mp3") || pathname.endsWith(".m4a") || pathname.endsWith(".mp4") || contentType.startsWith("audio")) {
                 if (contentLength > 1000000) {
                     this.monitorConsoleLog(`[找到]${urlString}`);
                     let filename = path.basename(pathname);
