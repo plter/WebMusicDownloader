@@ -81,13 +81,17 @@ class RendererMain {
                 if (contentLength > 1000000) {
                     this.monitorConsoleLog(`[找到]${urlString}`);
                     let filename = path.basename(pathname);
+                    let localDestFileAbsolutePath = path.join(this._getWebMusicDownloadDir(), filename);
 
-                    (() => {
+                    if (!fs.existsSync(localDestFileAbsolutePath)) {
                         let conn = parsedUrl.protocol == "https:" ? https.get(urlString) : http.get(urlString);
                         conn.on("response", res => {
-                            res.pipe(fs.createWriteStream(path.join(this._getWebMusicDownloadDir(), filename)));
+                            res.pipe(fs.createWriteStream(localDestFileAbsolutePath));
                         });
-                    })();
+                        this.monitorConsoleLog(`[提示]正在下载到 ${localDestFileAbsolutePath}`);
+                    } else {
+                        this.monitorConsoleLog(`[提示] ${localDestFileAbsolutePath} 已存在`);
+                    }
                 } else if (contentLength > 0) {
                     this.monitorConsoleLog(`[提示]音乐文件小于 1M，已忽略。${urlString}`);
                 } else {
