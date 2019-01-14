@@ -73,12 +73,12 @@ class RendererMain {
             this.monitorConsoleLog("建立 HTTPS 代理服务器失败");
         });
         pa.onGotContent = (urlString, relatedRequest, relatedResponse) => {
-            let contentType = relatedResponse.headers['content-type'] || "";
+            let contentType = (relatedResponse.headers['content-type'] || "").toLowerCase();
             let contentLength = parseInt(relatedResponse.headers['content-length'] || "0");
 
             let parsedUrl = url.parse(urlString);
             let pathname = parsedUrl.pathname ? parsedUrl.pathname.toLowerCase() : "";
-            if (pathname.endsWith(".mp3") || pathname.endsWith(".m4a") || pathname.endsWith(".mp4") || contentType.startsWith("audio")) {
+            if (pathname.endsWith(".mp3") || pathname.endsWith(".m4a") || pathname.endsWith(".mp4") || contentType.startsWith("audio") || contentType.startsWith("video")) {
                 if (contentLength > 1000000) {
                     this.monitorConsoleLog(`[找到]${urlString}`);
                     let filename = path.basename(pathname);
