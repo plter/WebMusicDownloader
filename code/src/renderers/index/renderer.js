@@ -59,9 +59,6 @@ class RendererMain {
         let pa = new ProxyAdapter();
         pa.start(() => {
             this.monitorConsoleLog(`成功在端口 ${Constants.MONITOR_PROXY_ADAPTER_PORT} 建立代理服务器入口`);
-
-            this._webview.src = "http://music.163.com";
-
         }, e => {
             if (e.code === 'EADDRINUSE') {
                 this.monitorConsoleLog(`[错误]端口 ${Constants.MONITOR_PROXY_ADAPTER_PORT} 被占用`);
