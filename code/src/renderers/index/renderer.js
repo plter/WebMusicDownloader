@@ -1,5 +1,6 @@
 const electron = require("electron");
 const http = require('http');
+const https = require('https');
 const Constants = require("../../commons/Constants");
 const ProxyAdapter = require("./ProxyAdapter");
 const url = require("url");
@@ -35,10 +36,7 @@ class RendererMain {
 
         this._inputSaveDir = document.querySelector("#save-dir");
         this._btnBrowserForSaveDir = document.querySelector("#btn-browse-for-save-dir");
-        this._webMusicDownloadDir = path.join(os.homedir(), "WebMusicDownload");
-        if (!fs.existsSync(this._webMusicDownloadDir)) {
-            fs.mkdirSync(this._webMusicDownloadDir);
-        }
+        this._webMusicDownloadDir = this.readMusicDownloadDirFromLS();
         this._inputSaveDir.value = this._webMusicDownloadDir;
     }
 
@@ -50,6 +48,7 @@ class RendererMain {
         this._btnBack.onclick = e => this._webview.goBack();
         this._btnForward.onclick = e => this._webview.goForward();
         this._btnToggleMonitorConsole.onclick = this._btnToggleMonitorConsole_clickHandler.bind(this);
+        this._btnBrowserForSaveDir.onclick = this._btnBrowserForSaveDir_clickHandler.bind(this);
     }
 
     startNetworkMonitor() {
@@ -81,6 +80,14 @@ class RendererMain {
             if (pathname.endsWith(".mp3") || pathname.endsWith("m4a") || contentType.startsWith("audio")) {
                 if (contentLength > 1000000) {
                     this.monitorConsoleLog(`[找到]${urlString}`);
+                    let filename = path.basename(pathname);
+
+                    (() => {
+                        let conn = parsedUrl.protocol == "https:" ? https.get(urlString) : http.get(urlString);
+                        conn.on("response", res => {
+                            res.pipe(fs.createWriteStream(path.join(this._getWebMusicDownloadDir(), filename)));
+                        });
+                    })();
                 } else if (contentLength > 0) {
                     this.monitorConsoleLog(`[提示]音乐文件小于 1M，已忽略。${urlString}`);
                 } else {
@@ -103,6 +110,36 @@ class RendererMain {
     loadFromUrl(url) {
         this._webview.src = url;
         this._urlInput.value = url;
+    }
+
+    _setWebMusicDownloadDir(path) {
+        this._webMusicDownloadDir = path;
+        this._inputSaveDir.value = path;
+        this.writeMusicDownloadDirToLS(path);
+    }
+
+    writeMusicDownloadDirToLS(path) {
+        localStorage.setItem("wmd.musicDownloadDir", path);
+    }
+
+    readMusicDownloadDirFromLS() {
+        let dir = localStorage.getItem("wmd.musicDownloadDir") || path.join(os.homedir(), "WebMusicDownload");
+        let mkdirs = dir => {
+            if (fs.existsSync(dir)) {
+                return;
+            }
+            let parent = path.dirname(dir);
+            if (!fs.existsSync(parent)) {
+                mkdirs(parent);
+            }
+            fs.mkdirSync(dir);
+        };
+        mkdirs(dir);
+        return dir;
+    }
+
+    _getWebMusicDownloadDir() {
+        return this._webMusicDownloadDir;
     }
 
     _webview_didNavigateHandler(e) {
@@ -130,12 +167,23 @@ class RendererMain {
     _btnToggleMonitorConsole_clickHandler(e) {
         if (!this._monitorConsoleExpanded) {
             this._networkMonitorContainer.style.height = "600px";
-            this._btnToggleMonitorConsole.innerHTML = "v";
+            this._btnToggleMonitorConsole.innerHTML = "<span class='fa fa-toggle-down'></span>";
             this._monitorConsoleExpanded = true;
         } else {
             this._networkMonitorContainer.style.height = "100px";
-            this._btnToggleMonitorConsole.innerHTML = "^";
+            this._btnToggleMonitorConsole.innerHTML = "<span class='fa fa-toggle-up'></span>";
             this._monitorConsoleExpanded = false;
+        }
+    }
+
+    _btnBrowserForSaveDir_clickHandler(e) {
+        let paths = electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(), {
+            title: "选择保存目录",
+            properties: ['openDirectory', 'createDirectory', 'promptToCreate']
+        });
+
+        if (paths && paths.length) {
+            this._setWebMusicDownloadDir(paths[0]);
         }
     }
 }

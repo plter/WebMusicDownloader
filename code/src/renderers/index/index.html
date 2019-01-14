@@ -3,8 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <title>Web music downloader</title>
+    <link rel="stylesheet" href="../../lib/font-awesome-4.7.0/css/font-awesome.css">
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.css">
     <link rel="stylesheet" href="style.css">
-    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.min.css">
 
     <script>
         window.jQuery = window.$ = require("jquery");
@@ -16,14 +17,16 @@
 <div id="root-container">
     <form id="url-input-bar">
         <div class="btn-group" role="group">
-            <a href="#" class="btn btn-dark btn-back">后退</a>
-            <a href="#" class="btn btn-dark btn-forward">前进</a>
+            <a href="#" class="btn btn-dark btn-back"><span class="fa fa-angle-left"></span></a>
+            <a href="#" class="btn btn-dark btn-forward"><span class="fa fa-angle-right"></span></a>
         </div>
         <div style="width: 5px"></div>
         <div class="header">网址</div>
         <input name="url" id="url-input">
         <div style="width: 5px"></div>
-        <input type="submit" value="Go" class="btn btn-dark">
+        <button type="submit" class="btn btn-dark">
+            <span class="fa fa-arrow-right"></span>
+        </button>
     </form>
     <webview id="webview" allowpopups></webview>
     <div class="network-monitor">
@@ -32,9 +35,9 @@
             <div style="flex: 1;"></div>
             <div>下载目录</div>
             <input type="text" readonly id="save-dir">
-            <a href="#" class="btn btn-dark btn-sm" id="btn-browse-for-save-dir">...</a>
+            <a href="#" class="btn btn-dark btn-sm" id="btn-browse-for-save-dir"><span class="fa fa-folder-open"></span></a>
             <div style="width: 5px;"></div>
-            <a class="btn btn-dark btn-sm" href="#" id="btn-toggle-monitor-console">^</a>
+            <a class="btn btn-dark btn-sm" href="#" id="btn-toggle-monitor-console"><span class="fa fa-toggle-up"></span></a>
         </div>
         <textarea readonly class="network-monitor-output"></textarea>
     </div>
