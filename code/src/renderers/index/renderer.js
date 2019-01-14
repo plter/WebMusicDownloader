@@ -39,6 +39,7 @@ class RendererMain {
         this._btnBrowserForSaveDir = document.querySelector("#btn-browse-for-save-dir");
         this._webMusicDownloadDir = this.readMusicDownloadDirFromLS();
         this._inputSaveDir.value = this._webMusicDownloadDir;
+        this._btnShowSaveDirInLocalExplorer = document.querySelector("#btn-show-save-dir-in-local-explorer");
 
         this._btnDonate = document.querySelector("#btn-donate");
     }
@@ -53,6 +54,7 @@ class RendererMain {
         this._btnToggleMonitorConsole.onclick = this._btnToggleMonitorConsole_clickHandler.bind(this);
         this._btnBrowserForSaveDir.onclick = this._btnBrowserForSaveDir_clickHandler.bind(this);
         this._btnDonate.onclick = e => Windows.showDonateWindow();
+        this._btnShowSaveDirInLocalExplorer.onclick = e => electron.shell.showItemInFolder(this._getWebMusicDownloadDir());
     }
 
     startNetworkMonitor() {
@@ -184,6 +186,7 @@ class RendererMain {
     _btnBrowserForSaveDir_clickHandler(e) {
         let paths = electron.remote.dialog.showOpenDialog(electron.remote.getCurrentWindow(), {
             title: "选择保存目录",
+            defaultPath: this._getWebMusicDownloadDir(),
             properties: ['openDirectory', 'createDirectory', 'promptToCreate']
         });
 
