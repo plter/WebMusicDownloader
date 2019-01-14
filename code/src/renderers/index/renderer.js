@@ -7,6 +7,7 @@ const url = require("url");
 const os = require("os");
 const path = require("path");
 const fs = require("fs");
+const Windows = require("../Windows");
 
 class RendererMain {
 
@@ -38,6 +39,8 @@ class RendererMain {
         this._btnBrowserForSaveDir = document.querySelector("#btn-browse-for-save-dir");
         this._webMusicDownloadDir = this.readMusicDownloadDirFromLS();
         this._inputSaveDir.value = this._webMusicDownloadDir;
+
+        this._btnDonate = document.querySelector("#btn-donate");
     }
 
     addListeners() {
@@ -49,6 +52,7 @@ class RendererMain {
         this._btnForward.onclick = e => this._webview.goForward();
         this._btnToggleMonitorConsole.onclick = this._btnToggleMonitorConsole_clickHandler.bind(this);
         this._btnBrowserForSaveDir.onclick = this._btnBrowserForSaveDir_clickHandler.bind(this);
+        this._btnDonate.onclick = e => Windows.showDonateWindow();
     }
 
     startNetworkMonitor() {

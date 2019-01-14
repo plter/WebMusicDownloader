@@ -1,4 +1,5 @@
 const Constants = require("./src/commons/Constants");
+const path = require("path");
 
 // Modules to control application life and create native browser window
 const {app, BrowserWindow, netLog} = require('electron');
@@ -13,7 +14,7 @@ function createWindow() {
     mainWindow = new BrowserWindow({width: 1200, height: 720});
 
     // and load the index.html of the app.
-    mainWindow.loadFile('src/renderers/index/index.html');
+    mainWindow.loadFile(path.join(__dirname, 'src', 'renderers', 'index', 'index.html'));
 
     // Open the DevTools.
     // mainWindow.webContents.openDevTools()

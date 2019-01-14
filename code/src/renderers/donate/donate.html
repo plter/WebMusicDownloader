@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>捐助</title>
+
+    <link rel="stylesheet" href="../../../node_modules/bootstrap/dist/css/bootstrap.css">
+
+    <script>
+        window.jQuery = window.$ = require("jquery");
+        require("bootstrap");
+        const electron = require("electron");
+    </script>
+    <style>
+        #root-container {
+            display: flex;
+            flex-direction: column;
+            padding: 5px;
+        }
+
+        .content {
+            flex: 1;
+        }
+
+        .footer {
+            text-align: center;
+        }
+    </style>
+
+</head>
+<body>
+<div id="root-container">
+    <div class="content">
+        <div style="text-align: center"><h3>捐助</h3></div>
+        <div style="text-indent: 2em;">开发该软件花费了巨大的精力，如果您能给点支持，多少都行，我非常感谢，同时我将更有动力将该软件做得更好。</div>
+        <div style="text-align: center;">
+            <img src="wechat.png" alt="wechat" height="380">
+        </div>
+    </div>
+    <div style="text-align: center;">
+        <div style="font-weight: bold;">源码地址</div>
+        <div>
+            <a href="#" onclick="electron.shell.openExternal('https://github.com/plter/WebMusicDownloader')">https://github.com/plter/WebMusicDownloader</a>
+        </div>
+        <div>
+            <a href="#" onclick="electron.shell.openExternal('https://gitee.com/topyunp/WebMusicDownloader')">https://gitee.com/topyunp/WebMusicDownloader</a>
+        </div>
+    </div>
+    <div class="footer">
+        <a href="#" class="btn btn-danger" onclick="window.close();">关闭</a>
+    </div>
+</div>
+<script>
+    (function () {
+        let root = document.querySelector("#root-container");
+
+        function resizeRootContainer() {
+            root.style.height = `${window.innerHeight}px`;
+        }
+
+        resizeRootContainer();
+        window.onresize = resizeRootContainer;
+    })();
+</script>
+</body>
+</html>
