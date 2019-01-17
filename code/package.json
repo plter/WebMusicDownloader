@@ -1,13 +1,17 @@
 {
-  "name": "electron-quick-start",
+  "name": "web-music-downloader",
   "version": "1.0.0",
-  "description": "A minimal Electron application",
+  "description": "Web music downloader",
   "main": "main.js",
   "scripts": {
     "start": "electron .",
-    "build": "gulp"
+    "build": "electron-builder --mac --win"
   },
-  "repository": "https://github.com/electron/electron-quick-start",
+  "build": {
+    "appId": "top.yunp.webmusicdownloader",
+    "asar": false
+  },
+  "repository": "https://github.com/plter/WebMusicDownloader",
   "keywords": [
     "Electron",
     "quick",
@@ -15,11 +19,11 @@
     "tutorial",
     "demo"
   ],
-  "author": "GitHub",
+  "author": "plter",
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^4.0.1",
-    "gulp": "^4.0.0"
+    "electron-builder": "^20.38.5"
   },
   "dependencies": {
     "bootstrap": "^4.2.1",
